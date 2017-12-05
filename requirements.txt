@@ -1,0 +1,16 @@
+apispec==0.27.0
+click==6.7
+Flask==0.12.2
+flask-apispec==0.4.2
+flask-marshmallow==0.8.0
+itsdangerous==0.24
+Jinja2==2.10
+MarkupSafe==1.0
+marshmallow==2.14.0
+psycopg2==2.7.3.2
+PyYAML==3.12
+six==1.11.0
+virtualenv==15.1.0
+webargs==1.8.1
+Werkzeug==0.12.2
+wheel==0.24.0
