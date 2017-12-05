@@ -14,15 +14,15 @@ class CommentTicketSchema(Schema):
 
 
 class UpdateTicketSchema(Schema):
-    action = fields.String(validate=validate.OneOf([WAIT, ANSWER, CLOSE]), required=True)
+    status = fields.String(validate=validate.OneOf([WAIT, ANSWER, CLOSE]), required=True)
     comment = fields.Nested(CommentTicketSchema, required=True)
 
     @post_load
     def _validate(self, data):
         ticket_id = request.view_args.get('ticket_id')
-        action = data.get('action')
-        if action == OPEN:
-            raise ValidationError(u'Неправильный action', ['action'])
+        status = data.get('status')
+        if status == OPEN:
+            raise ValidationError(u'Неправильный status', ['status'])
 
         ticket_object = mdl.get_ticket(ticket_id)
 
@@ -30,16 +30,16 @@ class UpdateTicketSchema(Schema):
             raise ValidationError(u'Указанный тикет не найден', ['ticket_id'])
 
         ticket_status = ticket_object[1]
-        if ticket_status == OPEN and action not in [ANSWER, CLOSE]:
-            raise ValidationError(u'На тикет можно либо отвеить, либо закрыть', ['action'])
+        if ticket_status == OPEN and status not in [ANSWER, CLOSE]:
+            raise ValidationError(u'На тикет можно либо отвеить, либо закрыть', ['status'])
 
-        if ticket_status == ANSWER and action not in [WAIT, CLOSE]:
-            raise ValidationError(u'Тикет можно перевести в статус "ожидае ответа" или "закрыт"', ['action'])
+        if ticket_status == ANSWER and status not in [WAIT, CLOSE]:
+            raise ValidationError(u'Тикет можно перевести в статус "ожидае ответа" или "закрыт"', ['status'])
 
         if ticket_status == CLOSE:
-            raise ValidationError(u'Тике уже закрыт изменить его нельзя', ['action'])
+            raise ValidationError(u'Тике уже закрыт изменить его нельзя', ['status'])
         comment = data['comment']
-        return dict(ticket_id=ticket_id, email=comment.get('email'), action=action, body=comment.get('body'))
+        return dict(ticket_id=ticket_id, email=comment.get('email'), status=status, body=comment.get('body'))
 
 
 class AddTicketSchema(Schema):

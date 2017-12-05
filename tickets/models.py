@@ -18,7 +18,7 @@ def get_ticket(ticket_id):
 
 def add_ticket(email=None, subject=None, message=None):
     with app.db.cursor() as cur:
-        create_datetime = dt.datetime.now()
+        create_datetime = dt.datetime.utcnow()
         query = cur.execute(
             'INSERT into tickets (create_date, subject, message, email) values \
             (%(create_date)s, %(subject)s, %(message)s, %(email)s) RETURNING id;',
@@ -29,13 +29,13 @@ def add_ticket(email=None, subject=None, message=None):
         return ticket_id
 
 
-def update_ticket(ticket_id, email=None, action=None, body=None):
+def update_ticket(ticket_id, email=None, status=None, body=None):
     with app.db.cursor() as cur:
         update_datetime = dt.datetime.utcnow()
         comment = json.dumps(dict(create_date=update_datetime.isoformat(), email=email, body=body))
         query = cur.execute(
             'UPDATE tickets SET status=(%s), update_date=(%s), comments=comments ||(%s) where tickets.id=(%s)',
-            (action, update_datetime, comment, ticket_id)
+            (status, update_datetime, comment, ticket_id)
         )
         app.db.commit()
         return ticket_id
