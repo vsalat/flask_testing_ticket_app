@@ -29,7 +29,7 @@ class UpdateTicketSchema(Schema):
         if not ticket_object:
             raise ValidationError(u'Указанный тикет не найден', ['ticket_id'])
 
-        ticket_status = ticket_object[1]
+        ticket_status = ticket_object['status']
         if ticket_status == OPEN and status not in [ANSWER, CLOSE]:
             raise ValidationError(u'На тикет можно либо отвеить, либо закрыть', ['status'])
 

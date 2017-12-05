@@ -24,4 +24,5 @@ class TicketResource(MethodResource):
     @use_kwargs(AddTicketSchema(strict=True))
     def post(self, **data):
         ticket_id = mdl.add_ticket(**data)
-        return {'id': ticket_id}
+        ticket = mdl.get_ticket(ticket_id)
+        return dict(data=ticket)
